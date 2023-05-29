@@ -3,14 +3,17 @@ from tkinter.ttk import Label, Button, Entry
 
 
 def miles_to_km_convert():
-    user_input = entry.get()
-    output_km = round(float(user_input) * 1.60934, 2)
-    output_label["text"] = output_km
+    user_input = float(entry.get())
+    if user_input < 0:
+        output_label["text"] = "Error: Number < 0"
+    else:
+        output_km = round(user_input * 1.60934, 2)
+        output_label["text"] = output_km
 
 
 root = tk.Tk()
 root.title("Miles to Km Converter.")
-root.minsize(height=200, width=300)
+root.minsize(height=200, width=350)
 root.config(padx=25, pady=25)
 
 label_1 = Label(root, text="is equal to", font=("Arial", 14))
