@@ -10,17 +10,22 @@ def button_clicked():
 root = tk.Tk()
 root.title("My First Gui Program.")
 root.minsize(height=480, width=640)
+root.config(padx=50, pady=50)
 
 # Labels
 label = Label(root, text="This is my label", font=("Arial", 25, "bold"))
-label.pack(expand=True)
+label.grid(row=0, column=0)
 label["text"] = "This is a new text"
+label.config(padding=50)
 
 button = Button(text="My Button", command=button_clicked)
-button.pack(expand=True)
+button.grid(column=1, row=1)
+
+button = Button(text="New Button", command=button_clicked)
+button.grid(column=2, row=0)
 
 entry = Entry(width=30)
 entry.insert(0, "Enter you username.")
-entry.pack(expand=True)
+entry.grid(column=3, row=2)
 
 root.mainloop()
