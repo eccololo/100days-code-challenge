@@ -20,6 +20,7 @@ button = Button(text="My Button", command=button_clicked)
 button.pack(expand=True)
 
 entry = Entry(width=30)
+entry.insert(0, "Enter you username.")
 entry.pack(expand=True)
 
 root.mainloop()
