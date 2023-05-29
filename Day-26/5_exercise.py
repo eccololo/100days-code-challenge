@@ -1,3 +1,4 @@
+# Converting Celcius to Fahrenheit.
 weather_c = {
     "Monday": 12,
     "Tuesday": 14,
