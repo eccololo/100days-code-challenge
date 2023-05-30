@@ -9,9 +9,9 @@ GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 BLUE = "#11009E"
 FONT_NAME = "Courier"
-WORK_MIN = 25
-SHORT_BREAK_MIN = 5
-LONG_BREAK_MIN = 15
+WORK_MIN = 3
+SHORT_BREAK_MIN = 1
+LONG_BREAK_MIN = 5
 reps = 1
 
 
@@ -46,11 +46,17 @@ def count_down(count):
 def start():
     global reps
     if reps % 8 == 0:
-        count_down(LONG_BREAK_MIN * 60)
+        label_1["text"] = "Long Break"
+        label_1.config(foreground=GREEN)
+        count_down(LONG_BREAK_MIN)
     elif reps % 2 == 0:
-        count_down(SHORT_BREAK_MIN * 60)
+        label_1["text"] = "Short Break"
+        label_1.config(foreground=PINK)
+        count_down(SHORT_BREAK_MIN)
     else:
-        count_down(WORK_MIN * 60)
+        label_1["text"] = "Work"
+        label_1.config(foreground=RED)
+        count_down(WORK_MIN)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
