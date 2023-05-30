@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
+import math
 
 # ---------------------------- CONSTANTS ------------------------------- #
 PINK = "#e2979c"
@@ -13,6 +14,10 @@ SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 
 
+def fix_count_numbers(count):
+    return "0" + str(count) if count < 10 else count
+
+
 # ---------------------------- TIMER RESET ------------------------------- #
 
 def reset():
@@ -22,13 +27,21 @@ def reset():
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
 def count_down(count):
-    canvas.itemconfigure(timer_text, text=count)
+    count_min = math.floor(count / 60)
+    count_second = count % 60
+    count_min = fix_count_numbers(count_min)
+    count_second = fix_count_numbers(count_second)
+    canvas.itemconfigure(timer_text, text=f"{count_min}:{count_second}")
     if count > 0:
         print(count)
         root.after(1000, count_down, count - 1)
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
+
+def start():
+    count_down(125)
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 root = Tk()
@@ -44,12 +57,10 @@ canvas.create_image(100, 112, image=tomato_img)
 timer_text = canvas.create_text(100, 130, text="00:00", fill="white", font=(FONT_NAME, 35, "bold"))
 canvas.grid(row=1, column=1)
 
-count_down(5)
-
 style = Style()
 style.configure('Action.TButton', font=(FONT_NAME, 11, 'bold'), foreground=BLUE)
 
-start_btn = Button(text="Start", command=count_down, style="Action.TButton")
+start_btn = Button(text="Start", command=start, style="Action.TButton")
 start_btn.grid(row=2, column=0)
 
 start_btn = Button(text="Reset", command=reset, style="Action.TButton")
