@@ -50,4 +50,7 @@ start_btn.grid(row=2, column=0)
 start_btn = Button(text="Reset", command=reset, style="Action.TButton")
 start_btn.grid(row=2, column=2)
 
+checkmark = Label(text="✔", font=(FONT_NAME, 25, "bold"), background=YELLOW, foreground=GREEN)
+checkmark.grid(row=3, column=1)
+
 root.mainloop()
