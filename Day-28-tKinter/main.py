@@ -47,11 +47,10 @@ def start():
     global reps
     if reps % 8 == 0:
         count_down(LONG_BREAK_MIN * 60)
+    elif reps % 2 == 0:
+        count_down(SHORT_BREAK_MIN * 60)
     else:
-        if reps % 2 == 0:
-            count_down(SHORT_BREAK_MIN * 60)
-        else:
-            count_down(WORK_MIN * 60)
+        count_down(WORK_MIN * 60)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
