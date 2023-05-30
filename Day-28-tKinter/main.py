@@ -45,8 +45,9 @@ def count_down(count):
 
 def start():
     global reps
+    check_str = checkmark.cget("text")
     if reps % 8 == 0:
-        label_1["text"] = "Long Break"
+        label_1["text"] = "Break"
         label_1.config(foreground=GREEN)
         count_down(LONG_BREAK_MIN)
     elif reps % 2 == 0:
@@ -55,6 +56,11 @@ def start():
         count_down(SHORT_BREAK_MIN)
     else:
         label_1["text"] = "Work"
+        if len(check_str) >= 4:
+            check_str = ""
+        else:
+            check_str += "✔"
+        checkmark["text"] = check_str
         label_1.config(foreground=RED)
         count_down(WORK_MIN)
 
@@ -82,7 +88,7 @@ start_btn.grid(row=2, column=0)
 start_btn = Button(text="Reset", command=reset, style="Action.TButton")
 start_btn.grid(row=2, column=2)
 
-checkmark = Label(text="✔", font=(FONT_NAME, 25, "bold"), background=YELLOW, foreground=GREEN)
+checkmark = Label(font=(FONT_NAME, 25, "bold"), background=YELLOW, foreground=GREEN)
 checkmark.grid(row=3, column=1)
 
 root.mainloop()
