@@ -1,7 +1,3 @@
-# TODO:
-#    1. Dodać sound do buttonów, break, long break oraz focus.
-#       Sound files można pobrać z internetu za darmo.
-
 from tkinter import *
 from tkinter.ttk import *
 from playsound import playsound
@@ -54,6 +50,7 @@ def start():
     global reps
     check_str = checkmark.cget("text")
     if reps % 8 == 0:
+        window_focus()
         label_1["text"] = "Break"
         play_sound(LONG_BREAK_SOUND)
         label_1.config(foreground=GREEN)
@@ -91,6 +88,15 @@ def reset():
 
 def play_sound(track):
     playsound(track)
+
+
+# ---------------------------- HELPER FUNC ------------------------------- #
+
+def window_focus():
+    root.lift()
+    root.attributes("-topmost", True)
+    root.focus_force()
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 root = Tk()
