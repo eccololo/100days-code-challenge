@@ -13,32 +13,31 @@ WORK_MIN = 3
 SHORT_BREAK_MIN = 1
 LONG_BREAK_MIN = 5
 reps = 1
+timer_1 = None
+timer_2 = None
 
 
 def fix_count_numbers(count):
     return "0" + str(count) if count < 10 else count
 
 
-# ---------------------------- TIMER RESET ------------------------------- #
-
-def reset():
-    pass
-
-
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
 def count_down(count):
     global reps
+    global timer_1
+    global timer_2
+
     count_min = math.floor(count / 60)
     count_second = count % 60
     count_min = fix_count_numbers(count_min)
     count_second = fix_count_numbers(count_second)
     canvas.itemconfigure(timer_text, text=f"{count_min}:{count_second}")
     if count > 0:
-        root.after(1000, count_down, count - 1)
+        timer_1 = root.after(1000, count_down, count - 1)
     else:
         reps += 1
-        root.after(1000, start)
+        timer_2 = root.after(1000, start)
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
@@ -63,6 +62,18 @@ def start():
         checkmark["text"] = check_str
         label_1.config(foreground=RED)
         count_down(WORK_MIN)
+
+
+# ---------------------------- TIMER RESET ------------------------------- #
+
+def reset():
+    global reps
+    reps = 1
+    root.after_cancel(timer_1)
+    root.after_cancel(timer_2)
+    label_1["text"] = "Focus"
+    canvas.itemconfigure(timer_text, text=f"00:00")
+    checkmark["text"] = ""
 
 
 # ---------------------------- UI SETUP ------------------------------- #
