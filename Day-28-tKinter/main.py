@@ -11,7 +11,8 @@ BLUE = "#11009E"
 FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
-LONG_BREAK_MIN = 20
+LONG_BREAK_MIN = 15
+reps = 1
 
 
 def fix_count_numbers(count):
@@ -27,20 +28,30 @@ def reset():
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
 def count_down(count):
+    global reps
     count_min = math.floor(count / 60)
     count_second = count % 60
     count_min = fix_count_numbers(count_min)
     count_second = fix_count_numbers(count_second)
     canvas.itemconfigure(timer_text, text=f"{count_min}:{count_second}")
     if count > 0:
-        print(count)
         root.after(1000, count_down, count - 1)
+    else:
+        reps += 1
+        root.after(1000, start)
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 
 def start():
-    count_down(125)
+    global reps
+    if reps % 8 == 0:
+        count_down(LONG_BREAK_MIN * 60)
+    else:
+        if reps % 2 == 0:
+            count_down(SHORT_BREAK_MIN * 60)
+        else:
+            count_down(WORK_MIN * 60)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
