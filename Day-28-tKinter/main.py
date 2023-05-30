@@ -1,5 +1,10 @@
+# TODO:
+#    1. Dodać sound do buttonów, break, long break oraz focus.
+#       Sound files można pobrać z internetu za darmo.
+
 from tkinter import *
 from tkinter.ttk import *
+from playsound import playsound
 import math
 
 # ---------------------------- CONSTANTS ------------------------------- #
@@ -12,6 +17,9 @@ FONT_NAME = "Courier"
 WORK_MIN = 3
 SHORT_BREAK_MIN = 1
 LONG_BREAK_MIN = 5
+WORK_SOUND = "./assets/sounds/notification.mp3"
+SHORT_BREAK_SOUND = "./assets/sounds/ping.mp3"
+LONG_BREAK_SOUND = "./assets/sounds/ding.mp3"
 reps = 1
 timer_1 = None
 timer_2 = None
@@ -47,14 +55,17 @@ def start():
     check_str = checkmark.cget("text")
     if reps % 8 == 0:
         label_1["text"] = "Break"
+        play_sound(LONG_BREAK_SOUND)
         label_1.config(foreground=GREEN)
         count_down(LONG_BREAK_MIN)
     elif reps % 2 == 0:
         label_1["text"] = "Break"
+        play_sound(SHORT_BREAK_SOUND)
         label_1.config(foreground=BLUE)
         count_down(SHORT_BREAK_MIN)
     else:
         label_1["text"] = "Work"
+        play_sound(WORK_SOUND)
         if len(check_str) >= 4:
             check_str = ""
         else:
@@ -75,6 +86,11 @@ def reset():
     canvas.itemconfigure(timer_text, text=f"00:00")
     checkmark["text"] = ""
 
+
+# ---------------------------- MUSIC SETUP ------------------------------- #
+
+def play_sound(track):
+    playsound(track)
 
 # ---------------------------- UI SETUP ------------------------------- #
 root = Tk()
