@@ -50,8 +50,8 @@ def start():
         label_1.config(foreground=GREEN)
         count_down(LONG_BREAK_MIN)
     elif reps % 2 == 0:
-        label_1["text"] = "Short Break"
-        label_1.config(foreground=PINK)
+        label_1["text"] = "Break"
+        label_1.config(foreground=BLUE)
         count_down(SHORT_BREAK_MIN)
     else:
         label_1["text"] = "Work"
