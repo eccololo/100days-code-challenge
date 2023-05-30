@@ -10,9 +10,9 @@ GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 BLUE = "#11009E"
 FONT_NAME = "Courier"
-WORK_MIN = 3
-SHORT_BREAK_MIN = 1
-LONG_BREAK_MIN = 5
+WORK_MIN = 25
+SHORT_BREAK_MIN = 5
+LONG_BREAK_MIN = 15
 WORK_SOUND = "./assets/sounds/notification.mp3"
 SHORT_BREAK_SOUND = "./assets/sounds/ping.mp3"
 LONG_BREAK_SOUND = "./assets/sounds/ding.mp3"
@@ -54,12 +54,12 @@ def start():
         label_1["text"] = "Break"
         play_sound(LONG_BREAK_SOUND)
         label_1.config(foreground=GREEN)
-        count_down(LONG_BREAK_MIN)
+        count_down(LONG_BREAK_MIN * 60)
     elif reps % 2 == 0:
         label_1["text"] = "Break"
         play_sound(SHORT_BREAK_SOUND)
         label_1.config(foreground=BLUE)
-        count_down(SHORT_BREAK_MIN)
+        count_down(SHORT_BREAK_MIN * 60)
     else:
         label_1["text"] = "Work"
         play_sound(WORK_SOUND)
@@ -69,7 +69,7 @@ def start():
             check_str += "✔"
         checkmark["text"] = check_str
         label_1.config(foreground=RED)
-        count_down(WORK_MIN)
+        count_down(WORK_MIN * 60)
 
 
 # ---------------------------- TIMER RESET ------------------------------- #
@@ -77,8 +77,11 @@ def start():
 def reset():
     global reps
     reps = 1
-    root.after_cancel(timer_1)
-    root.after_cancel(timer_2)
+    try:
+        root.after_cancel(timer_1)
+        root.after_cancel(timer_2)
+    except ValueError:
+        pass
     label_1["text"] = "Focus"
     canvas.itemconfigure(timer_text, text=f"00:00")
     checkmark["text"] = ""
