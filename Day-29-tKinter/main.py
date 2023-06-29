@@ -1,14 +1,41 @@
+# TODO:
+#    1. Dodać usuwanie duplikatow z pliku z danymi.
+#    2. Dodać ikonke copied to clipboard to entry z gen password.
+
+
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
 from playsound import playsound
 from random import randint, shuffle, choice
 import pyperclip
+import re
 
 root = Tk()
 root.title("Desktop Pass Manager")
 root.geometry("520x400")
 root.config(pady=50, padx=50)
+
+
+# ---------------------------- DATA VALIDATION ------------------------------- #
+
+def validate_data(**kwargs):
+    pattern_www = "[a-zA-Z0-9]+\\.[a-zA-Z0-9]{2,5}"
+
+    if len(kwargs["www"]) == 0:
+        messagebox.showwarning(title="Website Empty!", message="Website address cannot be empty!")
+        return False
+    elif not re.match(pattern_www, kwargs["www"]):
+        messagebox.showwarning(title="Wrong Website!", message="Website address is incorrect!")
+        return False
+    elif len(kwargs["login"]) == 0:
+        messagebox.showwarning(title="Login Empty!", message="Login cannot be empty!")
+        return False
+    elif len(kwargs["password"]) == 0:
+        messagebox.showwarning(title="Password Empty!", message="Password cannot be empty!")
+        return False
+
+    return True
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
@@ -37,27 +64,22 @@ def add_pass():
     www = entry_www.get()
     login = entry_login.get()
     password = entry_pass.get()
-    if len(www) == 0:
-        messagebox.showwarning(title="Website Empty!", message="Website adres cannot be empty!")
-        return -1
-    elif len(login) == 0:
-        messagebox.showwarning(title="Login Empty!", message="Login cannot be empty!")
-        return -1
-    elif len(password) == 0:
-        messagebox.showwarning(title="Password Empty!", message="Password cannot be empty!")
-        return -1
 
-    is_ok = messagebox.askokcancel(title=www, message=f"Details:\nlogin: {login}\npassword: {password}\n"
-                                                      f"Is it ok to save?")
+    is_data_ok = validate_data(www=www, login=login, password=password)
 
-    if is_ok:
-        with open("./pass-data.txt", "a") as f:
-            f.write(f"{www} | {login} | {password}\n")
+    if is_data_ok:
 
-        entry_www.delete(0, END)
-        entry_pass.delete(0, END)
+        is_ok = messagebox.askokcancel(title=www, message=f"Details:\nlogin: {login}\npassword: {password}\n"
+                                                          f"Is it ok to save?")
 
-        playsound("./ping.mp3")
+        if is_ok:
+            with open("./pass-data.txt", "a") as f:
+                f.write(f"{www} | {login} | {password}\n")
+
+            entry_www.delete(0, END)
+            entry_pass.delete(0, END)
+
+            playsound("./ping.mp3")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
