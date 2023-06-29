@@ -18,6 +18,15 @@ def add_pass():
     www = entry_www.get()
     login = entry_login.get()
     password = entry_pass.get()
+    if len(www) == 0:
+        messagebox.showwarning(title="Website Empty!", message="Website adres cannot be empty!")
+        return -1
+    elif len(login) == 0:
+        messagebox.showwarning(title="Login Empty!", message="Login cannot be empty!")
+        return -1
+    elif len(password) == 0:
+        messagebox.showwarning(title="Password Empty!", message="Password cannot be empty!")
+        return -1
 
     is_ok = messagebox.askokcancel(title=www, message=f"Details:\nlogin: {login}\npassword: {password}\n"
                                               f"Is it ok to save?")
