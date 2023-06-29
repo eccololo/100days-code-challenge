@@ -7,12 +7,25 @@ root.title("Desktop Pass Manager")
 root.geometry("520x400")
 root.config(pady=50, padx=50)
 
+
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def gen_pass():
     pass
 
+
 def add_pass():
-    pass
+    www = entry_www.get()
+    login = entry_login.get()
+    password = entry_pass.get()
+
+    with open("./pass-data.txt", "a") as f:
+        f.write(f"{www} | {login} | {password}\n")
+
+    entry_www.delete(0, "")
+    entry_pass.delete(0, "")
+
+    playsound("./ping.mp3")
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -31,9 +44,11 @@ label_pass = Label(root, text="Password: ")
 label_pass.grid(row=3, column=0)
 
 entry_www = Entry(root, width=48)
+entry_www.focus()
 entry_www.grid(row=1, column=1, columnspan=2)
 
 entry_login = Entry(root, width=48)
+entry_login.insert(0, "mateusz@gmail.com")
 entry_login.grid(row=2, column=1, columnspan=2)
 
 entry_pass = Entry(root, width=34)
@@ -47,6 +62,4 @@ btn_add.grid(row=4, column=1, columnspan=2)
 
 root.mainloop()
 
-
 # ---------------------------- SAVE PASSWORD ------------------------------- #
-
