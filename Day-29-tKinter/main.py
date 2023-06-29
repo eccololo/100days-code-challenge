@@ -1,6 +1,5 @@
 # TODO:
 #    1. Dodać usuwanie duplikatow z pliku z danymi.
-#    2. Dodać ikonke copied to clipboard to entry z gen password.
 
 
 from tkinter import *
@@ -58,6 +57,8 @@ def gen_pass():
 
     pyperclip.copy(password)
 
+    label_copied.config(text="Copied!")
+
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def add_pass():
@@ -78,6 +79,7 @@ def add_pass():
 
             entry_www.delete(0, END)
             entry_pass.delete(0, END)
+            label_copied.config(text="")
 
             playsound("./ping.mp3")
 
@@ -97,6 +99,9 @@ label_login.grid(row=2, column=0)
 
 label_pass = Label(root, text="Password: ")
 label_pass.grid(row=3, column=0)
+
+label_copied = Label(root, text="")
+label_copied.grid(row=3, column=3)
 
 entry_www = Entry(root, width=48)
 entry_www.focus()
