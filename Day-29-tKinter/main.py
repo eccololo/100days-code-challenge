@@ -1,5 +1,6 @@
 # TODO:
 #    1. Dodać usuwanie duplikatow z pliku z danymi.
+#    2. Add DOCStrings.
 
 
 from tkinter import *
@@ -10,10 +11,29 @@ from random import randint, shuffle, choice
 import pyperclip
 import re
 
+DB_PASS_FILE_PATH = "./pass-data.txt"
+
 root = Tk()
 root.title("Desktop Pass Manager")
 root.geometry("520x400")
 root.config(pady=50, padx=50)
+
+
+# ---------------------------- UTILITIES ------------------------------- #
+
+def check_for_duplicates(**kwargs):
+    www = kwargs["www"]
+    login = kwargs["login"]
+
+    with open(DB_PASS_FILE_PATH, "r") as f:
+        data = f.readlines()
+
+    cleaned = list(map(lambda x: x.replace("\n", ""), data))
+    for item in cleaned:
+        if www in item and login in item:
+            return True
+
+    return False
 
 
 # ---------------------------- DATA VALIDATION ------------------------------- #
@@ -66,22 +86,30 @@ def add_pass():
     login = entry_login.get()
     password = entry_pass.get()
 
-    is_data_ok = validate_data(www=www, login=login, password=password)
+    duplicate_proceed = True
+    is_duplicates = check_for_duplicates(www=www, login=login)
 
-    if is_data_ok:
+    if is_duplicates:
+        duplicate_proceed = messagebox.askyesno(title="Duplicated Detected!",
+        message="This website address and login are already in database. Do you want to duplicate data?")
 
-        is_ok = messagebox.askokcancel(title=www, message=f"Details:\nlogin: {login}\npassword: {password}\n"
-                                                          f"Is it ok to save?")
+    if duplicate_proceed:
+        is_data_ok = validate_data(www=www, login=login, password=password)
 
-        if is_ok:
-            with open("./pass-data.txt", "a") as f:
-                f.write(f"{www} | {login} | {password}\n")
+        if is_data_ok:
 
-            entry_www.delete(0, END)
-            entry_pass.delete(0, END)
-            label_copied.config(text="")
+            is_ok = messagebox.askokcancel(title=www, message=f"Details:\nlogin: {login}\npassword: {password}\n"
+                                                              f"Is it ok to save?")
 
-            playsound("./ping.mp3")
+            if is_ok:
+                with open(DB_PASS_FILE_PATH, "a") as f:
+                    f.write(f"{www} | {login} | {password}\n")
+
+                entry_www.delete(0, END)
+                entry_pass.delete(0, END)
+                label_copied.config(text="")
+
+                playsound("./ping.mp3")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
