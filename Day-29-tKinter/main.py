@@ -21,8 +21,8 @@ def add_pass():
     with open("./pass-data.txt", "a") as f:
         f.write(f"{www} | {login} | {password}\n")
 
-    entry_www.delete(0, "")
-    entry_pass.delete(0, "")
+    entry_www.delete(0, END)
+    entry_pass.delete(0, END)
 
     playsound("./ping.mp3")
 
