@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
+from tkinter import messagebox
 from playsound import playsound
 
 root = Tk()
@@ -18,13 +19,17 @@ def add_pass():
     login = entry_login.get()
     password = entry_pass.get()
 
-    with open("./pass-data.txt", "a") as f:
-        f.write(f"{www} | {login} | {password}\n")
+    is_ok = messagebox.askokcancel(title=www, message=f"Details:\nlogin: {login}\npassword: {password}\n"
+                                              f"Is it ok to save?")
 
-    entry_www.delete(0, END)
-    entry_pass.delete(0, END)
+    if is_ok:
+        with open("./pass-data.txt", "a") as f:
+            f.write(f"{www} | {login} | {password}\n")
 
-    playsound("./ping.mp3")
+        entry_www.delete(0, END)
+        entry_pass.delete(0, END)
+
+        playsound("./ping.mp3")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
