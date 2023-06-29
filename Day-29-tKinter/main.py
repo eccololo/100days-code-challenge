@@ -1,8 +1,3 @@
-# TODO:
-#    1. Dodać usuwanie duplikatow z pliku z danymi.
-#    2. Add DOCStrings.
-
-
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
@@ -22,6 +17,7 @@ root.config(pady=50, padx=50)
 # ---------------------------- UTILITIES ------------------------------- #
 
 def check_for_duplicates(**kwargs):
+    """This function checks if typed by user www and login already exists in DB."""
     www = kwargs["www"]
     login = kwargs["login"]
 
@@ -36,9 +32,44 @@ def check_for_duplicates(**kwargs):
     return False
 
 
+def override_pass(**kwargs):
+    """This function update user password if duplicate entry is detected if user wants to."""
+    www = kwargs["www"]
+    login = kwargs["login"]
+    password = kwargs["password"]
+    output = ""
+
+    with open(DB_PASS_FILE_PATH, "r") as f:
+        data = f.readlines()
+
+    cleaned = list(map(lambda x: x.replace("\n", ""), data))
+    for item in cleaned:
+        if len(item) > 0:
+            splitted = item.split("|")
+            db_www = splitted[0].strip()
+            db_login = splitted[1].strip()
+            db_pass = splitted[2].strip()
+            if db_www == www and db_login == login:
+                db_pass = password
+                output += f"{db_www} | {db_login} | {db_pass}\n"
+            else:
+                output += f"{db_www} | {db_login} | {db_pass}\n"
+
+    with open(DB_PASS_FILE_PATH, "w") as f:
+        f.write(output)
+
+
+def clear_entries_labels():
+    """This is helper function that clear entries and labels from values."""
+    entry_www.delete(0, END)
+    entry_pass.delete(0, END)
+    label_copied.config(text="")
+
+
 # ---------------------------- DATA VALIDATION ------------------------------- #
 
 def validate_data(**kwargs):
+    """This function checks the corectness of entered by user data."""
     pattern_www = "[a-zA-Z0-9]+\\.[a-zA-Z0-9]{2,5}"
 
     if len(kwargs["www"]) == 0:
@@ -59,7 +90,7 @@ def validate_data(**kwargs):
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def gen_pass():
-    # Password Generator Project
+    """This function generate strong password."""
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
                'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
                'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -82,18 +113,24 @@ def gen_pass():
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def add_pass():
+    """This function saves enetred data by user to DB like www, login and password."""
     www = entry_www.get()
     login = entry_login.get()
     password = entry_pass.get()
 
-    duplicate_proceed = True
+    duplicate_proceed = False
     is_duplicates = check_for_duplicates(www=www, login=login)
 
     if is_duplicates:
         duplicate_proceed = messagebox.askyesno(title="Duplicated Detected!",
-        message="This website address and login are already in database. Do you want to duplicate data?")
+                                                message="This website address and login are already in database. Do you want to update your pass?")
 
-    if duplicate_proceed:
+    if is_duplicates:
+        override_pass(www=www, login=login, password=password)
+        messagebox.showinfo(title="Success!", message="Password updated!")
+        clear_entries_labels()
+
+    elif not duplicate_proceed:
         is_data_ok = validate_data(www=www, login=login, password=password)
 
         if is_data_ok:
@@ -105,10 +142,7 @@ def add_pass():
                 with open(DB_PASS_FILE_PATH, "a") as f:
                     f.write(f"{www} | {login} | {password}\n")
 
-                entry_www.delete(0, END)
-                entry_pass.delete(0, END)
-                label_copied.config(text="")
-
+                clear_entries_labels()
                 playsound("./ping.mp3")
 
 
