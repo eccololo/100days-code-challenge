@@ -3,6 +3,7 @@ from tkinter.ttk import *
 from tkinter import messagebox
 from playsound import playsound
 from random import randint, shuffle, choice
+import pyperclip
 
 root = Tk()
 root.title("Desktop Pass Manager")
@@ -27,6 +28,8 @@ def gen_pass():
     password = "".join(password_list)
 
     entry_pass.insert(0, password)
+
+    pyperclip.copy(password)
 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
