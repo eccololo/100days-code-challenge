@@ -1,7 +1,14 @@
-{
-  "Amazon":
-  {
-    "login": "mateusz",
-    "password": "1234"
-  }
-}
+[
+    {
+        "udemy.com": {
+            "login": "mateusz@gmail.com",
+            "password": "0x4oXDBM%ay%0np#"
+        }
+    },
+    {
+        "amazon.com": {
+            "login": "mateusz@gmail.com",
+            "password": "58Ia3P(Zfx1)Z))a"
+        }
+    }
+]

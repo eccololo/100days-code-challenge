@@ -1,0 +1,32 @@
+[
+    {
+        "udemy.com": {
+            "login": "mateusz@gmail.com",
+            "password": "lw3++K7KO#rl2xX7mL"
+        }
+    },
+    {
+        "amazon.com": {
+            "login": "mateusz@gmail.com",
+            "password": "%d+iON3nLe2JQ6P!5"
+        }
+    },
+    {
+        "mbank.pl": {
+            "login": "mateusz@gmail.com",
+            "password": "u%h+u$#52x1chV0deS"
+        }
+    },
+    {
+        "inteligo.pl": {
+            "login": "mateusz@gmail.com",
+            "password": "i*st&zC1WoK2T9gY(0"
+        }
+    },
+    {
+        "blizzard.eu": {
+            "login": "mateusz@gmail.com",
+            "password": "Acq)6mO7+2w#WEO0"
+        }
+    }
+]
