@@ -4,6 +4,7 @@ from tkinter import messagebox
 from playsound import playsound
 import random
 import csv
+import inspect
 
 DATA_FILE_PATH = "assets/data/300_italian_polish_most_common_words.csv"
 FONT_NAME = "Courier"
@@ -45,4 +46,12 @@ canvas.grid(column=0, row=0, columnspan=2)
 title = canvas.create_text(290, 100, text="Italian", fill="black", font=(FONT_NAME, 30, "bold"))
 question_word = canvas.create_text(300, 210, text="Question", fill="black", font=(FONT_NAME, 55, "bold"))
 
+
+false_image = PhotoImage(file="./assets/images/wrong.png")
+false_btn = Button(image=false_image)
+false_btn.grid(row=1, column=0)
+
+right_image = PhotoImage(file="./assets/images/right.png")
+right_btn = Button(image=right_image)
+right_btn.grid(row=1, column=1)
 root.mainloop()
