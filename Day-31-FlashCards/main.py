@@ -49,6 +49,7 @@ question_word = canvas.create_text(300, 210, text="Question", fill="black", font
 
 false_image = PhotoImage(file="./assets/images/wrong.png")
 false_btn = Button(image=false_image)
+# false_btn.config(highlightthickness=0, borderwidth=0)
 false_btn.grid(row=1, column=0)
 
 right_image = PhotoImage(file="./assets/images/right.png")
