@@ -1,5 +1,6 @@
 # TODO:
-#    1.
+#    2. Zrobić tak aby jak użytkownik kliknie na true lub false aby pojawilo sie nowe pytanie.
+#    3. Dorobić SoundEffects do klikania na przyciski oraz kiedy pojawia się odpowiedz.
 
 
 from functools import partial
@@ -19,7 +20,7 @@ CANVAS_BG_COLOR = "#74b291"
 WINDOW_WIDTH = 720
 WINDOW_HEIGHT = 550
 TIMER = None
-QUESTION_NO = 2
+QUESTION_NO = None
 TITLE = None
 QA = None
 CANVAS = None
@@ -79,13 +80,15 @@ def center_the_project_window(w_root):
 # ===================== FUNCTIONALITY ===============
 def show_next_question():
     """This function shows on GUI next question. Takes data from data-set."""
-    global TITLE, QA
+    global TITLE, QA, QUESTION_NO
+    QUESTION_NO = random.randrange(2, 300)
+
+    clear_canvas_writing_field()
     subject_front = DATA_SET[1]["question"]
-    subject_back = DATA_SET[1]["answer"]
     question = DATA_SET[QUESTION_NO]["question"]
-    answer = DATA_SET[QUESTION_NO]["answer"]
     TITLE = CANVAS.create_text(290, 100, text=f"{subject_front}", fill="black", font=(FONT_NAME, 30, "bold"))
     QA = CANVAS.create_text(300, 210, text=f"{question}", fill="black", font=(FONT_NAME, 55, "bold"))
+    count_down(root)
 
 
 def count_down(root):
@@ -97,18 +100,14 @@ def count_down(root):
 
 def flip_to_answer(root):
     """This function flips flash card to show answer."""
-    global TIMER, CANVAS, IMAGE_TAG
+    global TIMER, CANVAS, IMAGE_TAG, QA, TITLE
     clear_canvas_writing_field()
     root.after_cancel(TIMER)
 
-    flash_card_image = PhotoImage(file="./assets/images/card_back.png")
-    CANVAS.itemconfig(IMAGE_TAG, image=flash_card_image)
-
-
     subject_back = DATA_SET[1]["answer"]
     answer = DATA_SET[QUESTION_NO]["answer"]
-    CANVAS.create_text(290, 100, text=f"{subject_back}", fill="black", font=(FONT_NAME, 30, "bold"))
-    CANVAS.create_text(300, 210, text=f"{answer}", fill="black", font=(FONT_NAME, 55, "bold"))
+    TITLE = CANVAS.create_text(290, 100, text=f"{subject_back}", fill="black", font=(FONT_NAME, 30, "bold"))
+    QA = CANVAS.create_text(300, 210, text=f"{answer}", fill="black", font=(FONT_NAME, 55, "bold"))
 
 
 root = Tk()
@@ -128,14 +127,13 @@ TITLE = CANVAS.create_text(290, 100, text="Italian", fill="black", font=(FONT_NA
 QA = CANVAS.create_text(300, 210, text="Question", fill="black", font=(FONT_NAME, 55, "bold"))
 
 false_image = PhotoImage(file="./assets/images/wrong.png")
-false_btn = Button(image=false_image)
+false_btn = Button(image=false_image, command=show_next_question)
 false_btn.grid(row=1, column=0)
 
 right_image = PhotoImage(file="./assets/images/right.png")
-right_btn = Button(image=right_image)
+right_btn = Button(image=right_image, command=show_next_question)
 right_btn.grid(row=1, column=1)
 
-clear_canvas_writing_field()
 show_next_question()
 count_down(root)
 
