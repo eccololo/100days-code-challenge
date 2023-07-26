@@ -1,6 +1,5 @@
 # TODO:
-#    2. Zrobić tak aby jak użytkownik kliknie na true lub false aby pojawilo sie nowe pytanie.
-#    3. Dorobić SoundEffects do klikania na przyciski oraz kiedy pojawia się odpowiedz.
+#    5. Zrobic tak aby po przerobieniu wszystkich pytan pojawil sie komunikat z gratulacjami.
 
 
 from functools import partial
@@ -10,7 +9,6 @@ from tkinter import messagebox
 from playsound import playsound
 import random
 import csv
-import inspect
 import sys
 
 DATA_FILE_PATH = "assets/data/300_italian_polish_most_common_words.csv"
@@ -21,10 +19,12 @@ WINDOW_WIDTH = 720
 WINDOW_HEIGHT = 550
 TIMER = None
 QUESTION_NO = None
+QUESTION_NO_MAX = 300
 TITLE = None
 QA = None
 CANVAS = None
 IMAGE_TAG = None
+COUNT_DOWN_TIME = 7000
 
 
 # ===================== Data ====================
@@ -81,7 +81,7 @@ def center_the_project_window(w_root):
 def show_next_question():
     """This function shows on GUI next question. Takes data from data-set."""
     global TITLE, QA, QUESTION_NO
-    QUESTION_NO = random.randrange(2, 300)
+    QUESTION_NO = random.randrange(2, QUESTION_NO_MAX)
 
     clear_canvas_writing_field()
     subject_front = DATA_SET[1]["question"]
@@ -91,11 +91,36 @@ def show_next_question():
     count_down(root)
 
 
+def show_next_question_if_true():
+    """This function showes user next question if he guest previous one. It decrease number of questions.
+    if user guest previous one."""
+    global TITLE, QA, QUESTION_NO, QUESTION_NO_MAX
+
+    del DATA_SET[QUESTION_NO]
+    QUESTION_NO_MAX -= 1
+    QUESTION_NO = random.randrange(2, QUESTION_NO_MAX)
+    playsound("./assets/sounds/notification.mp3")
+
+    clear_canvas_writing_field()
+    subject_front = DATA_SET[1]["question"]
+    question = DATA_SET[QUESTION_NO]["question"]
+    TITLE = CANVAS.create_text(290, 100, text=f"{subject_front}", fill="black", font=(FONT_NAME, 30, "bold"))
+    QA = CANVAS.create_text(300, 210, text=f"{question}", fill="black", font=(FONT_NAME, 55, "bold"))
+    count_down(root)
+
+
+def show_next_question_if_false():
+    """This function showes user next question when he don't know the answer and play sound
+    when button is clicked."""
+    playsound("./assets/sounds/notification.mp3")
+    show_next_question()
+
+
 def count_down(root):
     """This function counts 5 seconds and then execute flip to answer function. """
     global TIMER
     flip_to_answer_partial = partial(flip_to_answer, root)
-    TIMER = root.after(5000, flip_to_answer_partial)
+    TIMER = root.after(COUNT_DOWN_TIME, flip_to_answer_partial)
 
 
 def flip_to_answer(root):
@@ -127,11 +152,11 @@ TITLE = CANVAS.create_text(290, 100, text="Italian", fill="black", font=(FONT_NA
 QA = CANVAS.create_text(300, 210, text="Question", fill="black", font=(FONT_NAME, 55, "bold"))
 
 false_image = PhotoImage(file="./assets/images/wrong.png")
-false_btn = Button(image=false_image, command=show_next_question)
+false_btn = Button(image=false_image, command=show_next_question_if_false)
 false_btn.grid(row=1, column=0)
 
 right_image = PhotoImage(file="./assets/images/right.png")
-right_btn = Button(image=right_image, command=show_next_question)
+right_btn = Button(image=right_image, command=show_next_question_if_true)
 right_btn.grid(row=1, column=1)
 
 show_next_question()
