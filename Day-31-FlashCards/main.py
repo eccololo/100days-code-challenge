@@ -1,8 +1,8 @@
 # TODO:
-#    2. Zrobić timer tak aby po 5 sekundach karta flipowala sie na odpowiedz. Dane pobierane z data-set.
-#    3. Zrobic tak aby po flipie na odpowiedz timer przestawal odliczac i program czekal na odpowiedz usera.
+#    1.
 
 
+from functools import partial
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
@@ -15,8 +15,15 @@ import sys
 DATA_FILE_PATH = "assets/data/300_italian_polish_most_common_words.csv"
 DATA_SET = None
 FONT_NAME = "Courier"
+CANVAS_BG_COLOR = "#74b291"
 WINDOW_WIDTH = 720
 WINDOW_HEIGHT = 550
+TIMER = None
+QUESTION_NO = 2
+TITLE = None
+QA = None
+CANVAS = None
+IMAGE_TAG = None
 
 
 # ===================== Data ====================
@@ -44,10 +51,10 @@ def return_question_answer_from_data_set():
 
 
 # ===================== Utilities ===============
-def clear_canvas_writing_field(title, q_a_txt):
+def clear_canvas_writing_field():
     """This function clear what is written on canvas."""
-    canvas.delete(title)
-    canvas.delete(q_a_txt)
+    CANVAS.delete(TITLE)
+    CANVAS.delete(QA)
 
 
 def center_the_project_window(w_root):
@@ -72,14 +79,36 @@ def center_the_project_window(w_root):
 # ===================== FUNCTIONALITY ===============
 def show_next_question():
     """This function shows on GUI next question. Takes data from data-set."""
-
+    global TITLE, QA
     subject_front = DATA_SET[1]["question"]
     subject_back = DATA_SET[1]["answer"]
-    question_no = 2
-    question = DATA_SET[question_no]["question"]
-    answer = DATA_SET[question_no]["answer"]
-    canvas.create_text(290, 100, text=f"{subject_front}", fill="black", font=(FONT_NAME, 30, "bold"))
-    canvas.create_text(300, 210, text=f"{question}", fill="black", font=(FONT_NAME, 55, "bold"))
+    question = DATA_SET[QUESTION_NO]["question"]
+    answer = DATA_SET[QUESTION_NO]["answer"]
+    TITLE = CANVAS.create_text(290, 100, text=f"{subject_front}", fill="black", font=(FONT_NAME, 30, "bold"))
+    QA = CANVAS.create_text(300, 210, text=f"{question}", fill="black", font=(FONT_NAME, 55, "bold"))
+
+
+def count_down(root):
+    """This function counts 5 seconds and then execute flip to answer function. """
+    global TIMER
+    flip_to_answer_partial = partial(flip_to_answer, root)
+    TIMER = root.after(5000, flip_to_answer_partial)
+
+
+def flip_to_answer(root):
+    """This function flips flash card to show answer."""
+    global TIMER, CANVAS, IMAGE_TAG
+    clear_canvas_writing_field()
+    root.after_cancel(TIMER)
+
+    flash_card_image = PhotoImage(file="./assets/images/card_back.png")
+    CANVAS.itemconfig(IMAGE_TAG, image=flash_card_image)
+
+
+    subject_back = DATA_SET[1]["answer"]
+    answer = DATA_SET[QUESTION_NO]["answer"]
+    CANVAS.create_text(290, 100, text=f"{subject_back}", fill="black", font=(FONT_NAME, 30, "bold"))
+    CANVAS.create_text(300, 210, text=f"{answer}", fill="black", font=(FONT_NAME, 55, "bold"))
 
 
 root = Tk()
@@ -91,23 +120,23 @@ root.configure(bg='#B1DDC6')
 DATA_SET = return_question_answer_from_data_set()
 
 # ======================= UI ===========================
-canvas = Canvas(root, width=625, height=395, bg='#B1DDC6', highlightthickness=0)
-logo_image = PhotoImage(file="./assets/images/card_front.png")
-canvas.create_image(230, 140, image=logo_image)
-canvas.grid(column=0, row=0, columnspan=2)
-title = canvas.create_text(290, 100, text="Italian", fill="black", font=(FONT_NAME, 30, "bold"))
-question_word = canvas.create_text(300, 210, text="Question", fill="black", font=(FONT_NAME, 55, "bold"))
+CANVAS = Canvas(root, width=625, height=395, bg=CANVAS_BG_COLOR, highlightthickness=0)
+flash_card_image = PhotoImage(file="./assets/images/card_front.png")
+IMAGE_TAG = CANVAS.create_image(230, 140, image=flash_card_image)
+CANVAS.grid(column=0, row=0, columnspan=2)
+TITLE = CANVAS.create_text(290, 100, text="Italian", fill="black", font=(FONT_NAME, 30, "bold"))
+QA = CANVAS.create_text(300, 210, text="Question", fill="black", font=(FONT_NAME, 55, "bold"))
 
 false_image = PhotoImage(file="./assets/images/wrong.png")
 false_btn = Button(image=false_image)
-# false_btn.config(highlightthickness=0, borderwidth=0)
 false_btn.grid(row=1, column=0)
 
 right_image = PhotoImage(file="./assets/images/right.png")
 right_btn = Button(image=right_image)
 right_btn.grid(row=1, column=1)
 
-clear_canvas_writing_field(title, question_word)
+clear_canvas_writing_field()
 show_next_question()
+count_down(root)
 
 root.mainloop()
