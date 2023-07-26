@@ -20,11 +20,12 @@ WINDOW_HEIGHT = 550
 TIMER = None
 QUESTION_NO = None
 QUESTION_NO_MAX = 300
+QUESTION_NO_LIST = list(range(2, QUESTION_NO_MAX + 1))
 TITLE = None
 QA = None
 CANVAS = None
 IMAGE_TAG = None
-COUNT_DOWN_TIME = 7000
+COUNT_DOWN_TIME = 5500
 
 
 # ===================== Data ====================
@@ -80,8 +81,8 @@ def center_the_project_window(w_root):
 # ===================== FUNCTIONALITY ===============
 def show_next_question():
     """This function shows on GUI next question. Takes data from data-set."""
-    global TITLE, QA, QUESTION_NO
-    QUESTION_NO = random.randrange(2, QUESTION_NO_MAX)
+    global TITLE, QA, QUESTION_NO, QUESTION_NO_LIST
+    QUESTION_NO = random.choice(QUESTION_NO_LIST)
 
     clear_canvas_writing_field()
     subject_front = DATA_SET[1]["question"]
@@ -94,11 +95,19 @@ def show_next_question():
 def show_next_question_if_true():
     """This function showes user next question if he guest previous one. It decrease number of questions.
     if user guest previous one."""
-    global TITLE, QA, QUESTION_NO, QUESTION_NO_MAX
+    global TITLE, QA, QUESTION_NO
 
     del DATA_SET[QUESTION_NO]
-    QUESTION_NO_MAX -= 1
-    QUESTION_NO = random.randrange(2, QUESTION_NO_MAX)
+    QUESTION_NO_LIST.remove(QUESTION_NO)
+
+    # ENDGAME
+    if len(DATA_SET) <= 2:
+        root.after_cancel(TIMER)
+        playsound("./assets/sounds/ping.mp3")
+        messagebox.showinfo("Success.", "You finished all words. Congratulations!")
+        sys.exit()
+
+    QUESTION_NO = random.choice(QUESTION_NO_LIST)
     playsound("./assets/sounds/notification.mp3")
 
     clear_canvas_writing_field()
@@ -130,9 +139,15 @@ def flip_to_answer(root):
     root.after_cancel(TIMER)
 
     subject_back = DATA_SET[1]["answer"]
-    answer = DATA_SET[QUESTION_NO]["answer"]
+
+    # QUICK PATH - When user will know all answers and at the end of the program TIMER will not be set.
+    try:
+        answer = DATA_SET[QUESTION_NO]["answer"]
+        QA = CANVAS.create_text(300, 210, text=f"{answer}", fill="black", font=(FONT_NAME, 55, "bold"))
+    except:
+        pass
+
     TITLE = CANVAS.create_text(290, 100, text=f"{subject_back}", fill="black", font=(FONT_NAME, 30, "bold"))
-    QA = CANVAS.create_text(300, 210, text=f"{answer}", fill="black", font=(FONT_NAME, 55, "bold"))
 
 
 root = Tk()
