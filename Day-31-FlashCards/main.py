@@ -1,31 +1,12 @@
-# TODO:
-#    5. Zrobic tak aby po przerobieniu wszystkich pytan pojawil sie komunikat z gratulacjami.
-
-
 from functools import partial
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
 from playsound import playsound
+from settings import *
 import random
 import csv
 import sys
-
-DATA_FILE_PATH = "assets/data/300_italian_polish_most_common_words.csv"
-DATA_SET = None
-FONT_NAME = "Courier"
-CANVAS_BG_COLOR = "#74b291"
-WINDOW_WIDTH = 720
-WINDOW_HEIGHT = 550
-TIMER = None
-QUESTION_NO = None
-QUESTION_NO_MAX = 300
-QUESTION_NO_LIST = list(range(2, QUESTION_NO_MAX + 1))
-TITLE = None
-QA = None
-CANVAS = None
-IMAGE_TAG = None
-COUNT_DOWN_TIME = 5500
 
 
 # ===================== Data ====================
