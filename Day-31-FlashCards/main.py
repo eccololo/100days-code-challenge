@@ -60,7 +60,7 @@ def center_the_project_window(w_root):
 
 
 # ===================== FUNCTIONALITY ===============
-def show_next_question():
+def show_next_question(root):
     """This function shows on GUI next question. Takes data from data-set."""
     global TITLE, QA, QUESTION_NO, QUESTION_NO_LIST
     QUESTION_NO = random.choice(QUESTION_NO_LIST)
@@ -70,10 +70,16 @@ def show_next_question():
     question = DATA_SET[QUESTION_NO]["question"]
     TITLE = CANVAS.create_text(290, 100, text=f"{subject_front}", fill="black", font=(FONT_NAME, 30, "bold"))
     QA = CANVAS.create_text(300, 210, text=f"{question}", fill="black", font=(FONT_NAME, 55, "bold"))
+
+    # If TIMER is not set yet we just skip
+    try:
+        root.after_cancel(TIMER)
+    except ValueError:
+        pass
     count_down(root)
 
 
-def show_next_question_if_true():
+def show_next_question_if_true(root):
     """This function showes user next question if he guest previous one. It decrease number of questions.
     if user guest previous one."""
     global TITLE, QA, QUESTION_NO
@@ -96,6 +102,12 @@ def show_next_question_if_true():
     question = DATA_SET[QUESTION_NO]["question"]
     TITLE = CANVAS.create_text(290, 100, text=f"{subject_front}", fill="black", font=(FONT_NAME, 30, "bold"))
     QA = CANVAS.create_text(300, 210, text=f"{question}", fill="black", font=(FONT_NAME, 55, "bold"))
+
+    # If TIMER is not set yet we just skip
+    try:
+        root.after_cancel(TIMER)
+    except ValueError:
+        pass
     count_down(root)
 
 
@@ -152,10 +164,11 @@ false_btn = Button(image=false_image, command=show_next_question_if_false)
 false_btn.grid(row=1, column=0)
 
 right_image = PhotoImage(file="./assets/images/right.png")
-right_btn = Button(image=right_image, command=show_next_question_if_true)
+show_next_question_if_true_partial = partial(show_next_question_if_true, root)
+right_btn = Button(image=right_image, command=show_next_question_if_true_partial)
 right_btn.grid(row=1, column=1)
 
-show_next_question()
+show_next_question(root)
 count_down(root)
 
 root.mainloop()
