@@ -3,7 +3,7 @@ import random
 import datetime as dt
 
 QUOTES_FILE = "./quotes.txt"
-SEND_WHEN = 4
+SEND_WHEN = 5
 
 
 def get_random_motivational_quote(file_path):
@@ -13,7 +13,7 @@ def get_random_motivational_quote(file_path):
 
 
 email_from = "mateusz.hyla.ff@gmail.com"
-password_from = "<app_pass>"
+password_from = ""
 random_quote = get_random_motivational_quote(QUOTES_FILE).replace("\n", "")
 
 Days = {
