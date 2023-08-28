@@ -7,8 +7,8 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from time import sleep
 
-MY_LAT = 50.064651  # Your latitude
-MY_LONG = 19.944981  # Your longitude
+MY_LAT = 50.064651  # Kraków, Poland latitude
+MY_LONG = 19.944981  # Kraków, Poland longitude
 EMAIL_TO = "mateusz.hyla.it@gmail.com"
 EMAIL_FROM = "mateusz.hyla.ff@gmail.com"
 APP_PASS = "<app_pass>"
