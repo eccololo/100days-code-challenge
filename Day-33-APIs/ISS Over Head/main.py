@@ -71,16 +71,29 @@ def send_html_email_with_image_attachment():
         return True
 
 
-def is_iss_above_my_head(iss_lat, iss_long):
+def is_iss_above_my_head():
     """This function returns True is ISS is above my head and False if is not."""
-    diff_lat = abs(iss_lat - MY_LAT)
-    diff_long = abs(iss_long - MY_LONG)
+    response = requests.get(url="http://api.open-notify.org/iss-now.json")
+    response.raise_for_status()
+    data = response.json()
+
+    iss_latitude = float(data["iss_position"]["latitude"])
+    iss_longitude = float(data["iss_position"]["longitude"])
+    diff_lat = abs(iss_latitude - MY_LAT)
+    diff_long = abs(iss_longitude - MY_LONG)
     return diff_lat <= 5 and diff_long <= 5
 
 
-def is_still_day(sunrise, sunset, current_hour):
+def is_still_day():
     """This function returns True if it is still day and False if it is already night."""
-    return sunset > current_hour > sunrise
+    response = requests.get("https://api.sunrise-sunset.org/json", params=parameters)
+    response.raise_for_status()
+    data = response.json()
+    sunrise = int(data["results"]["sunrise"].split("T")[1].split(":")[0])
+    sunset = int(data["results"]["sunset"].split("T")[1].split(":")[0])
+
+    time_now_hour = datetime.now().hour
+    return sunset > time_now_hour > sunrise
 
 
 parameters = {
@@ -89,25 +102,9 @@ parameters = {
     "formatted": 0,
 }
 
-response = requests.get("https://api.sunrise-sunset.org/json", params=parameters)
-response.raise_for_status()
-data = response.json()
-sunrise = int(data["results"]["sunrise"].split("T")[1].split(":")[0])
-sunset = int(data["results"]["sunset"].split("T")[1].split(":")[0])
-
-time_now_hour = datetime.now().hour
-
 while True:
-    # Your position is within +5 or -5 degrees of the ISS position.
-    response = requests.get(url="http://api.open-notify.org/iss-now.json")
-    response.raise_for_status()
-    data = response.json()
-
-    iss_latitude = float(data["iss_position"]["latitude"])
-    iss_longitude = float(data["iss_position"]["longitude"])
-
-    if is_iss_above_my_head(iss_latitude, iss_longitude):
-        if not is_still_day(sunrise, sunset, time_now_hour):
+    if is_iss_above_my_head():
+        if not is_still_day():
             if send_html_email_with_image_attachment():
                 print("Notification email send. ISS is now visible on the ske.")
         else:
