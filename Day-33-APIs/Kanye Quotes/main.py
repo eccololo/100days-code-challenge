@@ -1,4 +1,5 @@
 from tkinter import *
+import requests
 
 WINDOW_WIDTH = 300
 WINDOW_HEIGHT = 414
@@ -24,8 +25,12 @@ def center_the_project_window(w_root):
 
 
 def get_quote():
-    pass
     # Write your code here.
+    response = requests.get("https://api.kanye.rest")
+    data = response.json()
+    quote = data['quote']
+    canvas.itemconfig(quote_text, text=quote)
+
 
 
 window = Tk()
@@ -35,7 +40,7 @@ window.config(padx=50, pady=50)
 canvas = Canvas(width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
 background_img = PhotoImage(file="background.png")
 canvas.create_image(150, 207, image=background_img)
-quote_text = canvas.create_text(150, 207, text="Kanye Quote Goes HERE", width=250, font=("Arial", 30, "bold"),
+quote_text = canvas.create_text(150, 207, text="Kanye Quote Goes HERE", width=250, font=("Arial", 25, "bold"),
                                 fill="white")
 canvas.grid(row=0, column=0)
 
