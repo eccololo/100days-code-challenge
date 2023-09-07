@@ -1,4 +1,5 @@
 import requests
+import smtplib
 from pprint import pprint
 import datetime
 import os
@@ -8,6 +9,9 @@ from email.mime.image import MIMEImage
 
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
+STOCK_IMAGE = "./images/stock-alert.jpg"
+EMAIL_TO = "mateusz.hyla.it@gmail.com"
+EMAIL_FROM = "mateusz.hyla.ff@gmail.com"
 
 
 def get_n_days_date_before(n):
@@ -15,6 +19,48 @@ def get_n_days_date_before(n):
     delta = datetime.timedelta(days=n)
     n_day_before_date = (date_now - delta).date()
     return str(n_day_before_date)
+
+
+def send_email_alert_about_stock(email_to, email_from, subject, message_text, message_html, app_pass):
+    """This function sends email in HTML format with birthday card as attachment."""
+    msg = MIMEMultipart('alternative')
+    msg['From'] = email_from
+    msg['To'] = email_to
+    msg['Subject'] = subject
+
+    try:
+        with open(STOCK_IMAGE, 'rb') as f:
+            img_data = f.read()
+    except FileNotFoundError as err_msg:
+        print("Image file was not found.")
+        print(f"Error message: {err_msg}")
+    else:
+        image_send = MIMEImage(img_data, name="Stock Alert!")
+        image_send.add_header('Content-ID', '<image1>')
+        msg.attach(image_send)
+
+    message = message_text
+    html = message_html
+
+    part1 = MIMEText(message, 'plain', 'utf-8')
+    part2 = MIMEText(html, 'html', 'utf-8')
+
+    msg.attach(part1)
+    msg.attach(part2)
+
+    try:
+        with smtplib.SMTP("smtp.gmail.com", port=587) as conn:
+            conn.starttls()
+            conn.login(user=email_from, password=app_pass)
+            conn.sendmail(from_addr=email_from,
+                          to_addrs=email_to,
+                          msg=msg.as_string())
+
+    except smtplib.SMTPConnectError as err_msg:
+        print(f"Email not sent. Something went wrong with sending email.")
+        print(f"Error message: {err_msg}")
+    else:
+        print(f"Stock email alert sent successfuly.")
 
 
 alpha_vantage_api_key = os.environ.get("AV_API_KEY")
@@ -67,9 +113,12 @@ if diff >= 0.1:
         url = item['url']
         image = item['urlToImage']
         who_published = item['source']
-
-        print(title)
-
+    else:
+        # TODO:
+        #    1. Continues here.
+        subject = f"[{COMPANY_NAME} Stock Alert] - 3 New Articles."
+        email_app_pass = os.environ.get("EMAIL_APP_PASS")
+        send_email_alert_about_stock(EMAIL_TO, EMAIL_FROM, subject, )
 
 ## STEP 3: Use https://www.twilio.com
 # Send a seperate message with the percentage change and each article's title and description to your phone number. 
