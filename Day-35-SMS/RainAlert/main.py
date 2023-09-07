@@ -1,12 +1,13 @@
 import requests
 from twilio.rest import Client
+import os
 
 twilio_account_sid = '<account_sid>'
-twilio_auth_token = '<api_key>'
+twilio_auth_token = os.environ.get("TWILIO_API_KEY")
 twilio_client = Client(twilio_account_sid, twilio_auth_token)
 
 api_endpoint_standard = "https://api.openweathermap.org/data/2.5/weather"
-api_key = "<api_key>"
+api_key = os.environ.get("OWM_API_KEY")
 
 # Krakow, PL
 parameters_3_days = {
