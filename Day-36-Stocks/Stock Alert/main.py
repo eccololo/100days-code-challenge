@@ -2,6 +2,9 @@ import requests
 from pprint import pprint
 import datetime
 import os
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
 
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
@@ -15,21 +18,22 @@ def get_n_days_date_before(n):
 
 
 alpha_vantage_api_key = os.environ.get("AV_API_KEY")
+
 alpha_vantage_request_url = 'https://www.alphavantage.co/query'
-parameters = {
+alpha_vantage_parameters = {
     "function": "TIME_SERIES_DAILY",
     "symbol": STOCK,
     "interval": "5min",
     "apikey": alpha_vantage_api_key
 }
-response = requests.get(alpha_vantage_request_url, params=parameters)
-data = response.json()
+response_stocks = requests.get(alpha_vantage_request_url, params=alpha_vantage_parameters)
+data_stocks = response_stocks.json()
 
 two_days_before = get_n_days_date_before(2)
 one_day_before = get_n_days_date_before(1)
 
-stock_close = float(data["Time Series (Daily)"][two_days_before]['4. close'])
-stock_open = float(data["Time Series (Daily)"][one_day_before]['1. open'])
+stock_close = float(data_stocks["Time Series (Daily)"][two_days_before]['4. close'])
+stock_open = float(data_stocks["Time Series (Daily)"][one_day_before]['1. open'])
 progress_symbols = ("🔺", "🔻")
 progress_symbol = ""
 if stock_open > stock_close:
@@ -41,14 +45,31 @@ elif stock_open < stock_close:
 else:
     diff = "No difference"
 
-# TESTING:
-# print(f"Difference between yesterday and day before yesterday : {progress_symbol}{round(diff, 2)}%")
+if diff >= 0.1:
+    news_api_key = os.environ.get("NEWS_API_KEY")
+    news_api_params = {
+        'q': COMPANY_NAME,
+        'from': get_n_days_date_before(7),
+        'sortBy': 'popularity',
+        'apiKey': news_api_key
+    }
+    news_api_request_url = 'https://newsapi.org/v2/everything'
 
-if diff >= 5.0:
-    print("Get news.")
+    response_news = requests.get(news_api_request_url, params=news_api_params)
+    data_news = response_news.json()
+    articles_3 = data_news['articles'][:3]
+    for item in articles_3:
+        author = item['author']
+        content = item['content']
+        desc = item['description']
+        title = item['title']
+        published_at = item['publishedAt'].split("T")[0]
+        url = item['url']
+        image = item['urlToImage']
+        who_published = item['source']
 
-## STEP 2: Use https://newsapi.org
-# Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME. 
+        print(title)
+
 
 ## STEP 3: Use https://www.twilio.com
 # Send a seperate message with the percentage change and each article's title and description to your phone number. 
