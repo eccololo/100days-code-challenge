@@ -1,9 +1,11 @@
 import os
 import requests
 
+# ===== NUTRITIONIX API =======
+
 GENDER = "male"
 WEIGHT_KG = 100
-HEIGHT_CM = 190
+HEIGHT_CM = 185
 AGE = 34
 
 APP_ID = os.environ.get("NUTRITIONIX_API_ID")
@@ -15,14 +17,33 @@ headers = {
     'x-app-key': API_KEY
 }
 
+query = input("What exercise did you make?: ")
+
 request_parameters = {
-    'query': "doing yoga for 45 minutes",
+    'query': query,
     "gender": GENDER,
     "weight_kg": WEIGHT_KG,
     "height_cm": HEIGHT_CM,
     "age": AGE
 }
 
+# ====== SHEETY API =======
+
+SHEETY_ENDPOINT = "https://api.sheety.co/d150a438f289ecabec118a7229ec2c48/mdbMyWorkouts/workouts"
+
+sheety_params = {
+    'workouts': {
+        "Date": None,
+        "Time": None,
+        "Exercise": None,
+        "Duration": None,
+        "Calories": None
+    }
+}
+
 if __name__ == "__main__":
-    response = requests.post(url=NUTRI_END_POINT, json=request_parameters, headers=headers)
-    print(response.text)
+    response = requests.post(url=NUTRI_END_POINT, json=request_parameters, headers=headers).json()
+    print(response)
+    duration_min = response["exercises"][0]["duration_min"]
+    exercise = str(response["exercises"][0]["name"]).title()
+    print(duration_min, exercise)
