@@ -1,5 +1,6 @@
 import os
 import requests
+import datetime
 
 # ===== NUTRITIONIX API =======
 
@@ -42,8 +43,10 @@ sheety_params = {
 }
 
 if __name__ == "__main__":
-    response = requests.post(url=NUTRI_END_POINT, json=request_parameters, headers=headers).json()
-    print(response)
-    duration_min = response["exercises"][0]["duration_min"]
-    exercise = str(response["exercises"][0]["name"]).title()
-    print(duration_min, exercise)
+    current_time = datetime.datetime.now().time().strftime("%H:%M:%S")
+    current_date = datetime.datetime.now().strftime("%Y/%m/%d")
+    # response = requests.post(url=NUTRI_END_POINT, json=request_parameters, headers=headers).json()
+    # print(response)
+    # duration_min = response["exercises"][0]["duration_min"]
+    # exercise = str(response["exercises"][0]["name"]).title()
+    # print(duration_min, exercise)
