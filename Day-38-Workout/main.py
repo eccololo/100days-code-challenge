@@ -30,10 +30,11 @@ request_parameters = {
 
 # ====== SHEETY API =======
 
-SHEETY_ENDPOINT = "https://api.sheety.co/d150a438f289ecabec118a7229ec2c48/mdbMyWorkouts/workouts"
+SHEETY_ENDPOINT = os.environ.get("SHEETY_ENDPOINT")
+GOOGLE_SHEET_NAME = "workout"
 
 sheety_params = {
-    'workouts': {
+    GOOGLE_SHEET_NAME: {
         "Date": str(),
         "Time": str(),
         "Exercise": str(),
@@ -52,8 +53,26 @@ if __name__ == "__main__":
     calories = response["exercises"][0]["nf_calories"]
     exercise = str(response["exercises"][0]["name"]).title()
 
-    sheety_params['workouts']['Date'] = current_date
-    sheety_params['workouts']['Time'] = current_time
-    sheety_params['workouts']['Duration'] = duration_min
-    sheety_params['workouts']['Exercise'] = exercise
-    sheety_params['workouts']['Calories'] = calories
+    sheety_params[GOOGLE_SHEET_NAME]['Date'] = current_date
+    sheety_params[GOOGLE_SHEET_NAME]['Time'] = current_time
+    sheety_params[GOOGLE_SHEET_NAME]['Duration'] = duration_min
+    sheety_params[GOOGLE_SHEET_NAME]['Exercise'] = exercise
+    sheety_params[GOOGLE_SHEET_NAME]['Calories'] = calories
+
+    # FIXME:
+    #    1. Data are sent but doesn't saved in Google Sheets - Why?
+
+    response = requests.post(
+        url=SHEETY_ENDPOINT,
+        json=sheety_params,
+        auth=(
+            os.environ["ENV_SHEETY_USERNAME"],
+            os.environ["ENV_SHEETY_PASSWORD"],
+        ))
+
+    if response.status_code != 200:
+        print("Ups. Something went wrong.")
+        print(response.status_code, response.text)
+    else:
+        print("Data added to your Google Sheet successfully.")
+        print(response.status_code, response.text)
