@@ -34,19 +34,26 @@ SHEETY_ENDPOINT = "https://api.sheety.co/d150a438f289ecabec118a7229ec2c48/mdbMyW
 
 sheety_params = {
     'workouts': {
-        "Date": None,
-        "Time": None,
-        "Exercise": None,
-        "Duration": None,
-        "Calories": None
+        "Date": str(),
+        "Time": str(),
+        "Exercise": str(),
+        "Duration": int(),
+        "Calories": int()
     }
 }
 
 if __name__ == "__main__":
     current_time = datetime.datetime.now().time().strftime("%H:%M:%S")
     current_date = datetime.datetime.now().strftime("%Y/%m/%d")
-    # response = requests.post(url=NUTRI_END_POINT, json=request_parameters, headers=headers).json()
-    # print(response)
-    # duration_min = response["exercises"][0]["duration_min"]
-    # exercise = str(response["exercises"][0]["name"]).title()
-    # print(duration_min, exercise)
+
+    response = requests.post(url=NUTRI_END_POINT, json=request_parameters, headers=headers).json()
+
+    duration_min = response["exercises"][0]["duration_min"]
+    calories = response["exercises"][0]["nf_calories"]
+    exercise = str(response["exercises"][0]["name"]).title()
+
+    sheety_params['workouts']['Date'] = current_date
+    sheety_params['workouts']['Time'] = current_time
+    sheety_params['workouts']['Duration'] = duration_min
+    sheety_params['workouts']['Exercise'] = exercise
+    sheety_params['workouts']['Calories'] = calories
