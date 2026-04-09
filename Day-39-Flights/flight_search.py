@@ -27,8 +27,6 @@ class FlightSearch:
 
         flights = data.get("data", [])
 
-        # pprint(data)
-
         results = []
 
         for flight in flights:
