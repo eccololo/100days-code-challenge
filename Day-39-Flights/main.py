@@ -1,1 +1,1 @@
-# Starting project of day 39
+#This file will need to use the DataManager,FlightSearch, FlightData, NotificationManager classes to achieve the program requirements.
